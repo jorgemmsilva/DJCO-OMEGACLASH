@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class FireAll : MonoBehaviour {
-	enum Weapons {Bazooka_Weapon, Mina_Weapon, Mola_Weapon, Ilussion_Weapon, Bouncy_Weapon, Ballon_Trap};
+	enum Weapons {Bazooka_Weapon, Mina_Weapon, Mola_Weapon, Ilussion_Weapon, Bouncy_Weapon, Ballon_Trap, Laser_Weapon};
 
 	public Transform Bazooka;
 	public float Bazooka_Force = 1000.0f;
@@ -14,6 +14,8 @@ public class FireAll : MonoBehaviour {
 	public Transform Bouncy;
 	public float Bouncy_Force = 400.0f;
 	public Transform Ballon;
+	public Transform Laser;
+	public float Laser_Force = 100.0f;
 
 	
 	private Weapons weapon_selected = Weapons.Bazooka_Weapon;
@@ -41,6 +43,9 @@ public class FireAll : MonoBehaviour {
 					weapon_selected = Weapons.Ballon_Trap;
 					break;
 				case Weapons.Ballon_Trap:
+					weapon_selected = Weapons.Laser_Weapon;
+					break;
+				case Weapons.Laser_Weapon:
 					weapon_selected = Weapons.Bazooka_Weapon;
 					break;
 				default:
@@ -74,6 +79,10 @@ public class FireAll : MonoBehaviour {
 					break;
 				case Weapons.Ballon_Trap:
 					myBullet = (Transform)Network.Instantiate(Ballon, transform.position, transform.rotation, 0);
+					break;
+				case Weapons.Laser_Weapon:
+					myBullet = (Transform)Network.Instantiate(Laser, transform.position, transform.rotation, 0);
+					myBullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * Laser_Force, ForceMode.Force);
 					break;
 				default:
 					break;

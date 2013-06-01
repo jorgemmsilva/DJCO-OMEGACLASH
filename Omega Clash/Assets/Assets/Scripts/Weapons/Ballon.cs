@@ -42,7 +42,6 @@ public class Ballon : MonoBehaviour {
 	        	rigidbody.AddForce(randomForce, ForceMode.VelocityChange);
 			}
 			// We apply going up manually
-			Debug.Log(new Vector3 (0, gravity * rigidbody.mass, 0));
 		    rigidbody.AddForce(new Vector3 (0, gravity * rigidbody.mass, 0));
 		}	
 	}
