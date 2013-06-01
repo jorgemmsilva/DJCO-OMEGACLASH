@@ -1,21 +1,34 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Example\Scripts\playerController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Assets\Scripts\Movement\ilussionScript.cs">
     <Files>
-      <File FileName="Assets\Assets\NetworkScript.cs" Line="6" Column="35" />
-      <File FileName="Assets\Example\Scripts\playerController.cs" Line="48" Column="7" />
-      <File FileName="Assets\Assets\avatarController.cs" Line="80" Column="21" />
+      <File FileName="Assets\Assets\Scripts\Movement\ilussionScript.cs" Line="91" Column="2" />
+      <File FileName="Assets\Assets\Scripts\Weapons\Mola.cs" Line="12" Column="1" />
+      <File FileName="Assets\Assets\Scripts\Weapons\Bazooka.cs" Line="11" Column="75" />
+      <File FileName="Assets\Assets\Scripts\Weapons\Mina.cs" Line="12" Column="4" />
+      <File FileName="Assets\Assets\Scripts\Weapons\FireAll.cs" Line="64" Column="101" />
+      <File FileName="Assets\Assets\Scripts\Movement\RigidbodyFPSController.cs" Line="45" Column="5" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Assets" expanded="True">
-              <Node name="Assets" expanded="True" />
-              <Node name="Example" expanded="True">
+              <Node name="Assets" expanded="True">
                 <Node name="Scripts" expanded="True">
-                  <Node name="playerController.cs" selected="True" />
+                  <Node name="Movement" expanded="True">
+                    <Node name="ilussionScript.cs" selected="True" />
+                  </Node>
+                  <Node name="Network" expanded="True" />
+                  <Node name="Weapons" expanded="True" />
                 </Node>
+              </Node>
+            </Node>
+          </Node>
+          <Node name="Assembly-UnityScript" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Standard Assets (Mobile)" expanded="True">
+                <Node name="Scripts" expanded="True" />
               </Node>
             </Node>
           </Node>
