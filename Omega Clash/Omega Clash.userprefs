@@ -1,43 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Assets\Scripts\Weapons\Laser.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Assets\Scripts\Weapons\LaserRays.cs">
     <Files>
-      <File FileName="Assets\Assets\Scripts\Weapons\Laser.cs" Line="18" Column="49" />
+      <File FileName="Assets\Assets\Scripts\Weapons\LaserRays.cs" Line="31" Column="52" />
       <File FileName="Assets\Assets\Scripts\Movement\ilussionScript.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Weapons\Mola.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Weapons\Bazooka.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Weapons\Mina.cs" Line="1" Column="1" />
-      <File FileName="Assets\Assets\Scripts\Weapons\FireAll.cs" Line="1" Column="1" />
+      <File FileName="Assets\Assets\Scripts\Weapons\FireAll.cs" Line="65" Column="27" />
       <File FileName="Assets\Assets\Scripts\Movement\RigidbodyFPSController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Assets\Scripts\Weapons\Ballon.cs" Line="1" Column="1" />
+      <File FileName="Assets\Assets\Scripts\Weapons\Ballon.cs" Line="50" Column="3" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="Assembly-CSharp" expanded="True">
-            <Node name="Assets" expanded="True">
-              <Node name="Assets" expanded="True">
-                <Node name="Scripts" expanded="True">
-                  <Node name="Movement" expanded="True" />
-                  <Node name="Weapons" expanded="True">
-                    <Node name="Laser.cs" selected="True" />
-                  </Node>
-                </Node>
-              </Node>
-            </Node>
-          </Node>
-          <Node name="Assembly-UnityScript-firstpass" expanded="True">
-            <Node name="Assets" expanded="True">
-              <Node name="Standard Assets" expanded="True">
-                <Node name="Character Controllers" expanded="True">
-                  <Node name="Sources" expanded="True">
-                    <Node name="Scripts" expanded="True" />
-                  </Node>
-                </Node>
-              </Node>
-            </Node>
-          </Node>
-        </State>
+        <State expanded="True" />
       </Pad>
       <Pad Id="ClassPad">
         <State expanded="True" selected="True" />

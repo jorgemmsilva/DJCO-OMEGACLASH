@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Laser : MonoBehaviour {
+public class Laser_Proj : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Mirror")

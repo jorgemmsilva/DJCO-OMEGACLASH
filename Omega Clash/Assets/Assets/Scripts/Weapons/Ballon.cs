@@ -47,7 +47,7 @@ public class Ballon : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other) {
-		Transform myBullet = (Transform)Network.Instantiate(content, transform.position, transform.rotation, 0);
+		Network.Instantiate(content, transform.position, transform.rotation, 0);
 		Destroy(this.gameObject);
         Destroy(this);		
     }
