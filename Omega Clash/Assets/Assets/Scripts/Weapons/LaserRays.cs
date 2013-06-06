@@ -20,7 +20,7 @@ public class LaserRays : MonoBehaviour {
 			}
 			before.Clear();
 		}
-		if(Input.GetMouseButton(0))
+		if(Input.GetMouseButton(0) && ((FireAll)(this.gameObject.GetComponent<FireAll>())).weapon_selected==FireAll.Weapons.Laser_Weapon)
 		{
 			Transform origin = new GameObject().transform;
 			origin.position = transform.position;

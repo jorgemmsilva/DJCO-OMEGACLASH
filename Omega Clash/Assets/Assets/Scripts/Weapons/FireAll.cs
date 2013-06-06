@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class FireAll : MonoBehaviour {
-	enum Weapons {Bazooka_Weapon, Mina_Weapon, Mola_Weapon, Ilussion_Weapon, Bouncy_Weapon, Ballon_Trap, Laser_Weapon};
+	public enum Weapons {Bazooka_Weapon, Mina_Weapon, Mola_Weapon, Ilussion_Weapon, Bouncy_Weapon, Ballon_Trap, Laser_Weapon};
 
 	public Transform Bazooka;
 	public float Bazooka_Force = 1000.0f;
@@ -16,16 +16,31 @@ public class FireAll : MonoBehaviour {
 	public Transform Ballon;
 	public Transform Laser;
 	public float Laser_Force = 100.0f;
-
 	
-	private Weapons weapon_selected = Weapons.Bazooka_Weapon;
-
+	public Weapons weapon_selected = Weapons.Bazooka_Weapon;
+	public int[] ammo = {10,-1,-1,-1,-1,-1,-1};
+	private string[] weaponNames= {"Bazooka","Spring Mine","Spring Hook","Illusion","Rubber Ball","Balloon Trap","Laser"};
+	public Texture2D hudTexture;
+	void OnGUI() {
+		int offsetX=(Screen.width-1024)/2;
+		int offsetY=Screen.height-128;
+		GUI.Label(new Rect(offsetX,offsetY,1024,128),hudTexture);
+		GUI.Label(new Rect(offsetX+170,offsetY+30, 300, 20), "Health=100");
+		GUI.Label(new Rect(offsetX+320,offsetY+30, 400, 20), "Weapon="+weaponNames[(int)weapon_selected]);
+		GUI.Label(new Rect(offsetX+320,offsetY+60, 400, 100), "Weapon\u2208" +
+			"{Bazooka, Spring Mine, Spring Hook,\n Illusion, Rubber Ball, Balloon Trap, Laser}");
+		GUI.Label(new Rect(offsetX+640,offsetY+30, 400, 100), "Ammo="+ammo[(int)weapon_selected]);
+	}
+	
 	// Update is called once per frame
 	void Update () {
-		
 		if(Input.GetMouseButtonDown(1))
 		{
-			switch (weapon_selected)
+			do {
+				weapon_selected=(FireAll.Weapons)((int)(weapon_selected+1)%7);
+			}
+			while (ammo[(int)weapon_selected]<0);
+			/*switch (weapon_selected)
 			{
 				case Weapons.Bazooka_Weapon:
 					weapon_selected = Weapons.Mina_Weapon;
@@ -50,10 +65,11 @@ public class FireAll : MonoBehaviour {
 					break;
 				default:
 					break;
-			}
+			}*/
 		}
-		if(Input.GetMouseButtonDown(0))
+		if(Input.GetMouseButtonDown(0) && ammo[(int)weapon_selected]>0)
 		{
+			ammo[(int)weapon_selected]--;
 			Transform myBullet;
 			switch (weapon_selected)
 			{
@@ -81,8 +97,8 @@ public class FireAll : MonoBehaviour {
 					myBullet = (Transform)Network.Instantiate(Ballon, transform.position, transform.rotation, 0);
 					break;
 				case Weapons.Laser_Weapon:
-					myBullet = (Transform)Network.Instantiate(Laser, transform.position, transform.rotation, 0);
-					myBullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * Laser_Force, ForceMode.Force);
+					/*myBullet = (Transform)Network.Instantiate(Laser, transform.position, transform.rotation, 0);
+					myBullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * Laser_Force, ForceMode.Force);*/
 					break;
 				default:
 					break;
