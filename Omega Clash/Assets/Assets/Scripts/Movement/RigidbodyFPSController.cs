@@ -7,15 +7,20 @@ using System.Collections;
 public class RigidbodyFPSController : MonoBehaviour {
  
 	public float speed = 10.0f;
+	public float sprintMultiplier = 2.0f;
+	
 	public float gravity = 10.0f;
 	public float maxVelocityChange = 10.0f;
 	public bool canJump = true;
 	public float jumpHeight = 2.0f;
 	public float rotatexspeed = 1.0F;
 	public float rotateyspeed = 2.0F;
+	public float bottomRotationVertical = 45.0f;
+	public float upperRotationVertical = 80.0f;
 	
 	private bool grounded = false;
-	private Vector3 angleRotate = Vector3.zero;
+	private Vector3 characterRotate = Vector3.zero;
+	private Vector3 cameraRotate = Vector3.zero;
  
  
 	void Awake () {
@@ -32,21 +37,34 @@ public class RigidbodyFPSController : MonoBehaviour {
 		animation.CrossFade("idle");
 		if(networkView.isMine)
 		{
-			angleRotate.y += Input.GetAxis("Mouse X") * rotatexspeed;
-			angleRotate.y = angleRotate.y % 360;
-			angleRotate.x -= Input.GetAxis("Mouse Y") * rotateyspeed;
-			angleRotate.x = angleRotate.x % 360;
-			transform.rotation = Quaternion.Euler(angleRotate);
+			characterRotate.y += Input.GetAxis("Mouse X") * rotatexspeed;
+			characterRotate.y = characterRotate.y % 360;
+			transform.rotation = Quaternion.Euler(characterRotate);
+			
+			
+			cameraRotate.y = characterRotate.y;
+			cameraRotate.x -= Input.GetAxis("Mouse Y") * rotateyspeed;
+			if(cameraRotate.x < -upperRotationVertical) 
+				cameraRotate.x = -upperRotationVertical;
+			else if(cameraRotate.x > bottomRotationVertical)
+				cameraRotate.x = bottomRotationVertical;
+			
+			Camera.main.transform.rotation = Quaternion.Euler(cameraRotate);
 			
 		    if (grounded)
 			{
 		        // Calculate how fast we should be moving
 		        Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 				targetVelocity.Normalize();
-				if(targetVelocity.magnitude>0)
+				
+				if (Input.GetKey(KeyCode.LeftShift))
+					targetVelocity *= sprintMultiplier;
+				
+				
+				if(targetVelocity.magnitude>0.0)
 				{
-					if(targetVelocity.magnitude>0.66) animation.CrossFade("sprint");
-					else if(targetVelocity.magnitude>0.33) animation.CrossFade("run");
+					if(targetVelocity.magnitude>1.0) animation.CrossFade("sprint");
+					else if(targetVelocity.magnitude>0.66) animation.CrossFade("run");
 					else animation.CrossFade("walk");
 				}
 				
