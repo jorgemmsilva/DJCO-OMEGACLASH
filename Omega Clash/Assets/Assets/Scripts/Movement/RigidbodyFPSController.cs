@@ -51,41 +51,38 @@ public class RigidbodyFPSController : MonoBehaviour {
 			
 			Camera.main.transform.rotation = Quaternion.Euler(cameraRotate);
 			
-		    if (grounded)
+			
+		
+	        // Calculate how fast we should be moving
+	        Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+			targetVelocity.Normalize();
+			if (Input.GetKey(KeyCode.LeftShift))
+				targetVelocity *= sprintMultiplier;
+			
+			if(targetVelocity.magnitude>0.0)
 			{
-		        // Calculate how fast we should be moving
-		        Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-				targetVelocity.Normalize();
-				
-				if (Input.GetKey(KeyCode.LeftShift))
-					targetVelocity *= sprintMultiplier;
-				
-				
-				if(targetVelocity.magnitude>0.0)
-				{
-					if(targetVelocity.magnitude>1.0) animation.CrossFade("sprint");
-					else if(targetVelocity.magnitude>0.66) animation.CrossFade("run");
-					else animation.CrossFade("walk");
-				}
-				
-				
-		        targetVelocity = transform.TransformDirection(targetVelocity);
-		        targetVelocity *= speed;
-	 
-		        // Apply a force that attempts to reach our target velocity
-		        Vector3 velocity = rigidbody.velocity;
-		        Vector3 velocityChange = (targetVelocity - velocity);
-		        velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-		        velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-		        velocityChange.y = 0;
-		        rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
-	 
-		        // Jump
-		        if (canJump && Input.GetButton("Jump")) {
-		            rigidbody.velocity = new Vector3(velocity.x, CalculateJumpVerticalSpeed(), velocity.z);
-		        }
-		    }
-	 
+				if(targetVelocity.magnitude>1.0) animation.CrossFade("sprint");
+				else if(targetVelocity.magnitude>0.66) animation.CrossFade("run");
+				else animation.CrossFade("walk");
+			}
+			
+			
+	        targetVelocity = transform.TransformDirection(targetVelocity);
+	        targetVelocity *= speed;
+ 
+	        // Apply a force that attempts to reach our target velocity
+	        Vector3 velocity = rigidbody.velocity;
+	        Vector3 velocityChange = (targetVelocity - velocity);
+	        velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
+	        velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
+	        velocityChange.y = 0;
+	        rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
+
+			// Jump
+	        if (grounded && canJump && Input.GetButton("Jump")) {
+	            rigidbody.velocity = new Vector3(velocity.x, CalculateJumpVerticalSpeed(), velocity.z);
+	        }
+ 
 		    // We apply gravity manually for more tuning control
 		    rigidbody.AddForce(new Vector3 (0, -gravity * rigidbody.mass, 0));
 	 
