@@ -1,10 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Assets\Scripts\Weapons\FireAll.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Assets\Scripts\Weapons\LaserRays.cs">
     <Files>
-      <File FileName="Assets\Assets\Scripts\Weapons\FireAll.cs" Line="39" Column="36" />
-      <File FileName="Assets\Assets\Scripts\Weapons\LaserRays.cs" Line="24" Column="53" />
-      <File FileName="Assets\Assets\Scripts\Movement\ilussionScript.cs" Line="1" Column="1" />
+      <File FileName="Assets\Assets\Scripts\Weapons\FireAll.cs" Line="91" Column="6" />
+      <File FileName="Assets\Assets\Scripts\Weapons\LaserRays.cs" Line="26" Column="50" />
+      <File FileName="Assets\Assets\Scripts\Movement\ilussionScript.cs" Line="12" Column="31" />
       <File FileName="Assets\Assets\Scripts\Weapons\Mola.cs" Line="17" Column="1" />
       <File FileName="Assets\Assets\Scripts\Weapons\Bazooka.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Weapons\Mina.cs" Line="1" Column="1" />
@@ -22,7 +22,7 @@
                   <Node name="Movement" expanded="True" />
                   <Node name="Network" expanded="True" />
                   <Node name="Weapons" expanded="True">
-                    <Node name="FireAll.cs" selected="True" />
+                    <Node name="LaserRays.cs" selected="True" />
                   </Node>
                 </Node>
               </Node>
