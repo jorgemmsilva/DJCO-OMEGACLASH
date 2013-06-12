@@ -76,7 +76,13 @@ public class RigidbodyFPSController : MonoBehaviour {
 	        velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
 	        velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
 	        velocityChange.y = 0;
-	        rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
+			
+			RaycastHit info = new RaycastHit();
+			if(Physics.Raycast(rigidbody.transform.position, velocityChange, out info, 2.0f))
+			{
+				if(info.normal.normalized.y>0.4) rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
+			}
+			else rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
 
 			// Jump
 	        if (grounded && canJump && Input.GetButton("Jump")) {

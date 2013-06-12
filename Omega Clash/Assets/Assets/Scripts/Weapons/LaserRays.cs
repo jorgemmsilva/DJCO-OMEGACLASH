@@ -21,13 +21,13 @@ public class LaserRays : MonoBehaviour {
 			before.Clear();
 		}
 		FireAll fireall=(FireAll)(this.gameObject.GetComponent<FireAll>());
-		if(Input.GetMouseButton(0) && fireall.weapons[fireall.weapon_selected].laser)
+		if(Input.GetMouseButton(0) && fireall.weapons[fireall.weapon_selected].type == WeaponType.Laser)
 		{
 			Transform origin = new GameObject().transform;
 			origin.position = transform.position;
 			origin.forward = transform.forward;
 			int count=0;
-			while(true && count<3)
+			while(count<25)
 			{
 				count++;
 				Vector3 fwd = origin.TransformDirection(Vector3.forward);

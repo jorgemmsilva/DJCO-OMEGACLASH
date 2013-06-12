@@ -14,12 +14,11 @@ public class Weapon {
 	public string val2String;
 	public float val2Scale;
 	public float val2;
-	public bool rigid;
-	public bool spring;
-	public bool mine;
-	public bool illusion;
-	public bool laser;
+	public WeaponType type;
 };
+
+[Serializable]
+public enum WeaponType { Bazooka, Mola, MinaExplosiva, MinaElastica, Ilusao, Balao, BolaPinchona, MeleeWimshurst, Laser, BlackHole, CampoMagnetico };
 
 public class FireAll : MonoBehaviour {
 	
@@ -68,26 +67,40 @@ public class FireAll : MonoBehaviour {
 		{
 			Weapon weapon=weapons[weapon_selected];
 			weapon.ammo--;
-			if (!weapon.laser) {
+			if (weapon.type != WeaponType.Laser) {
 				Transform bullet=(Transform)Network.Instantiate(weapon.bullet, transform.position, transform.rotation, 0);
-				if (weapon.spring) {
-					bullet.GetComponent<Mola>().author = transform.parent.gameObject;
-				}
-				if (weapon.mine) {
-					bullet.GetComponent<Mina>().force = weapon.val1;
-					bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * 100, ForceMode.Force);
-					
-				}
-				if (weapon.rigid) {
-					bullet.rigidbody.mass=weapon.val2;
+				switch (weapon.type)
+				{
 					// NOTA: Unidade de força do Unity = 1/50 N
-					bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * 50, ForceMode.Force);
-					// Reacção
-					this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);
-				}
-				if (weapon.illusion) {
-					bullet.GetComponent<ilussionScript>().time_to_live = weapon.val1;
-					bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * 100, ForceMode.Force);
+					case WeaponType.Balao:
+						break;
+					case WeaponType.Bazooka:
+						bullet.rigidbody.mass=weapon.val2;
+						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * 50, ForceMode.Force);
+						this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);
+						break;
+					case WeaponType.BolaPinchona:
+						bullet.rigidbody.mass=weapon.val2;
+						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * 50, ForceMode.Force);
+						this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);
+						break;
+					case WeaponType.CampoMagnetico:
+						break;
+					case WeaponType.Ilusao:
+						bullet.GetComponent<ilussionScript>().time_to_live = weapon.val1;
+						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * 100, ForceMode.Force);
+						break;
+					case WeaponType.MeleeWimshurst:
+						break;
+					case WeaponType.MinaElastica:
+						bullet.GetComponent<Mina>().force = weapon.val1;
+						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * 100, ForceMode.Force);
+						break;
+					case WeaponType.MinaExplosiva:
+						break;
+					case WeaponType.Mola:
+						bullet.GetComponent<Mola>().author = transform.parent.gameObject;
+						break;
 				}
 			}
 		}

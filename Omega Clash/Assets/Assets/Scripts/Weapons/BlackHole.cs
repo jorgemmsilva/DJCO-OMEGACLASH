@@ -28,6 +28,18 @@ public class BlackHole : MonoBehaviour {
 		starttime +=Time.deltaTime;
 		if (starttime > time_to_live)
 		{
+			Collider[] Colliders;
+				
+			Colliders = Physics.OverlapSphere(transform.position, range);
+			
+			for(int i = 0; i<Colliders.Length; i++)
+			{
+				if(Colliders[i].gameObject.tag == "Player")
+				{
+					Colliders[i].rigidbody.AddExplosionForce(attractiveForce * timeActive, this.transform.position, range, -1.0f,ForceMode.Acceleration);
+				}
+			}
+			
 			Destroy(this.gameObject);
 			Destroy(this);
 		}
