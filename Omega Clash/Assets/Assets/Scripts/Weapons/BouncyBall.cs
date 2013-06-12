@@ -1,29 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
-public class BlackHole : MonoBehaviour {
+public class BouncyBall : MonoBehaviour {
 	
 	public GameObject author;
-	public float range = 50.0f;
 	public float time_to_live = 20.0f;
-	public float timeActive = 5.0f;
-	public float attractiveForce = 100.0f;
+	public float explosiveForce = 1000.0f;
+	public float range = 40.0f;
 	
 	private float starttime = 0;
-	private bool active = false;
-
-	void OnCollisionEnter(Collision other)
-	{
-		if (!active && other.gameObject != author)
-		{
-			this.rigidbody.velocity = Vector3.zero;
-			this.GetComponent<TrailRenderer>().enabled = false;
-			this.rigidbody.isKinematic = true;
-			starttime = 0;
-			time_to_live = timeActive;
-			active = true;
-		}
-    }
 	
 	void FixedUpdate () {
 		starttime +=Time.deltaTime;
@@ -37,27 +22,13 @@ public class BlackHole : MonoBehaviour {
 			{
 				if(Colliders[i].gameObject.tag == "Player")
 				{
-					Colliders[i].rigidbody.AddExplosionForce(attractiveForce * timeActive * 50, this.transform.position, range, -1.0f,ForceMode.Force);
+					Debug.Log("I GOT THE POWA");
+					Colliders[i].rigidbody.AddExplosionForce(explosiveForce * 50, this.transform.position, range, 1.0f,ForceMode.Force);
 				}
 			}
 			
 			Destroy(this.gameObject);
 			Destroy(this);
-		}
-		
-		if(active)
-		{
-			Collider[] Colliders;
-				
-			Colliders = Physics.OverlapSphere(transform.position, range);
-			
-			for(int i = 0; i<Colliders.Length; i++)
-			{
-				if(Colliders[i].gameObject.tag == "Player")
-				{
-					Colliders[i].rigidbody.AddExplosionForce(-attractiveForce * 50, this.transform.position, range, -1.0f,ForceMode.Force);
-				}
-			}
 		}
 	}
 	

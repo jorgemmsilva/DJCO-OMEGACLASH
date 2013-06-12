@@ -10,13 +10,15 @@ public class RigidbodyFPSController : MonoBehaviour {
 	public float sprintMultiplier = 2.0f;
 	
 	public float gravity = 10.0f;
-	public float maxVelocityChange = 10.0f;
+	public float maxVelocityChange = 0.4f;
+	public float maxVelocity = 20.0f;
 	public bool canJump = true;
 	public float jumpHeight = 2.0f;
 	public float rotatexspeed = 1.0F;
 	public float rotateyspeed = 2.0F;
 	public float bottomRotationVertical = 45.0f;
 	public float upperRotationVertical = 80.0f;
+	public float minVelocityTreshold = 1.0f;
 	
 	private bool grounded = false;
 	private Vector3 characterRotate = Vector3.zero;
@@ -29,7 +31,13 @@ public class RigidbodyFPSController : MonoBehaviour {
 
 		animation.wrapMode = WrapMode.Loop;
 		animation.Stop();
-
+		if(networkView.isMine)
+		{
+			foreach (Transform child in gameObject.transform)
+			{
+				child.renderer.enabled = false;
+			}
+		}
 	}
  
 	void FixedUpdate () {
@@ -42,14 +50,15 @@ public class RigidbodyFPSController : MonoBehaviour {
 			transform.rotation = Quaternion.Euler(characterRotate);
 			
 			
-			cameraRotate.y = characterRotate.y;
+			cameraRotate.y = 0;
+			cameraRotate.z = 0;
 			cameraRotate.x -= Input.GetAxis("Mouse Y") * rotateyspeed;
 			if(cameraRotate.x < -upperRotationVertical) 
 				cameraRotate.x = -upperRotationVertical;
 			else if(cameraRotate.x > bottomRotationVertical)
 				cameraRotate.x = bottomRotationVertical;
 			
-			Camera.main.transform.rotation = Quaternion.Euler(cameraRotate);
+			Camera.main.transform.localRotation = Quaternion.Euler(cameraRotate);
 			
 			
 		
@@ -59,34 +68,46 @@ public class RigidbodyFPSController : MonoBehaviour {
 			if (Input.GetKey(KeyCode.LeftControl))
 				targetVelocity *= sprintMultiplier;
 			
+			if(rigidbody.velocity.magnitude < minVelocityTreshold)
+					rigidbody.velocity = Vector3.zero;
+			
 			if(targetVelocity.magnitude>0.0)
 			{
 				if(targetVelocity.magnitude>1.0) animation.CrossFade("sprint");
 				else if(targetVelocity.magnitude>0.66) animation.CrossFade("run");
 				else animation.CrossFade("walk");
+				
+				
+			
+				targetVelocity = transform.TransformDirection(targetVelocity);
+		        targetVelocity *= speed;
+				
+	 
+		        // Apply a force that attempts to reach our target velocity
+		        Vector3 velocity = rigidbody.velocity;
+		        Vector3 velocityChange = (targetVelocity - velocity);
+				velocityChange.Normalize();
+				velocityChange *= maxVelocityChange;
+				
+				
+		        velocityChange.y = 0;
+				
+				if(rigidbody.velocity.magnitude < minVelocityTreshold)
+					velocityChange *= 20;
+				
+				
+				RaycastHit info = new RaycastHit();
+				if(Physics.Raycast(rigidbody.transform.position, velocityChange, out info, 2.0f))
+				{
+					if(info.normal.normalized.y>0.4) rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
+				}
+				else rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
 			}
 			
-			
-	        targetVelocity = transform.TransformDirection(targetVelocity);
-	        targetVelocity *= speed;
- 
-	        // Apply a force that attempts to reach our target velocity
-	        Vector3 velocity = rigidbody.velocity;
-	        Vector3 velocityChange = (targetVelocity - velocity);
-	        velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-	        velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-	        velocityChange.y = 0;
-			
-			RaycastHit info = new RaycastHit();
-			if(Physics.Raycast(rigidbody.transform.position, velocityChange, out info, 2.0f))
-			{
-				if(info.normal.normalized.y>0.4) rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
-			}
-			else rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
 
 			// Jump
 	        if (grounded && canJump && Input.GetButton("Jump")) {
-	            rigidbody.velocity = new Vector3(velocity.x, CalculateJumpVerticalSpeed(), velocity.z);
+	            rigidbody.velocity = new Vector3(rigidbody.velocity.x, CalculateJumpVerticalSpeed(), rigidbody.velocity.z);
 	        }
  
 		    // We apply gravity manually for more tuning control

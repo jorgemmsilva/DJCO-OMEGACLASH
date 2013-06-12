@@ -17,6 +17,7 @@ public class LaserRays : MonoBehaviour {
 			for(int i=0;i<before.Count;i++)
 			{
 				Destroy(before[i].gameObject);
+				Destroy (before[i]);
 			}
 			before.Clear();
 		}
@@ -26,14 +27,17 @@ public class LaserRays : MonoBehaviour {
 			Transform origin = new GameObject().transform;
 			origin.position = transform.position;
 			origin.forward = transform.forward;
+			before.Add(origin);
+
+			
 			int count=0;
 			while(count<25)
 			{
 				count++;
 				Vector3 fwd = origin.TransformDirection(Vector3.forward);
 				RaycastHit info = new RaycastHit();
-				//Debug.DrawRay(transform.position,fwd,Color.red,1000);
-	        	if (Physics.Raycast(origin.position, fwd, out info, 1000.0f))
+				
+				if (Physics.Raycast(origin.position, fwd, out info, 1000.0f))
 				{
 					Vector3 halfway = origin.position + ((info.point - origin.position)/2);
 					float halfdistance = ((info.point - origin.position).magnitude)/2;
@@ -52,7 +56,6 @@ public class LaserRays : MonoBehaviour {
 						origin.position = info.point;
 						origin.forward = reflection;
 						Debug.DrawRay(origin.position,origin.forward,Color.red,2);
-						//print("MIRROR" + Random.Range(-100,100));
 					}
 					else
 					{						
