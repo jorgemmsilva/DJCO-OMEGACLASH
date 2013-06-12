@@ -56,7 +56,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 	        // Calculate how fast we should be moving
 	        Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 			targetVelocity.Normalize();
-			if (Input.GetKey(KeyCode.LeftShift))
+			if (Input.GetKey(KeyCode.LeftControl))
 				targetVelocity *= sprintMultiplier;
 			
 			if(targetVelocity.magnitude>0.0)
@@ -94,6 +94,10 @@ public class RigidbodyFPSController : MonoBehaviour {
 	 
 		    grounded = false;
 		}
+		else
+		{
+			this.rigidbody.velocity = Vector3.zero;
+		}
 	}
  
 	void OnCollisionStay () {
@@ -128,8 +132,6 @@ public class RigidbodyFPSController : MonoBehaviour {
 			Quaternion receivedRotation = new Quaternion();
 	        stream.Serialize(ref receivedRotation); //"Decode" it and receive it
 	        transform.rotation = receivedRotation;
-			
-			rigidbody.velocity = Vector3.zero;
 	    }
 	}
 }

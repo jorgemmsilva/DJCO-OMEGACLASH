@@ -6,7 +6,7 @@ public class Mola : MonoBehaviour {
 	
 	void OnCollisionEnter(Collision other)
 	{
-		if (other.gameObject.tag == "Player")
+		if (other.gameObject.tag == "Player" && other.gameObject != author)
 		{
 			Debug.Log("author:" + author + " other"+ other.gameObject);
 			SpringJoint springJoint = author.AddComponent<SpringJoint>();

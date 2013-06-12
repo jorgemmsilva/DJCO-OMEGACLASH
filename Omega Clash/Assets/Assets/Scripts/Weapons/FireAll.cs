@@ -75,6 +75,13 @@ public class FireAll : MonoBehaviour {
 					case WeaponType.Balao:
 						break;
 					case WeaponType.Bazooka:
+						bullet.GetComponent<Bazooka>().author = this.transform.root.gameObject;
+						bullet.rigidbody.mass=weapon.val2;
+						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * 50, ForceMode.Force);
+						this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);
+						break;
+					case WeaponType.BlackHole:
+						bullet.GetComponent<BlackHole>().author = this.transform.root.gameObject;
 						bullet.rigidbody.mass=weapon.val2;
 						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * 50, ForceMode.Force);
 						this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);
@@ -93,13 +100,17 @@ public class FireAll : MonoBehaviour {
 					case WeaponType.MeleeWimshurst:
 						break;
 					case WeaponType.MinaElastica:
-						bullet.GetComponent<Mina>().force = weapon.val1;
+						bullet.GetComponent<MinaElastica>().author = this.transform.root.gameObject;
+						bullet.GetComponent<MinaElastica>().force = weapon.val1;
 						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * 100, ForceMode.Force);
 						break;
 					case WeaponType.MinaExplosiva:
 						break;
 					case WeaponType.Mola:
-						bullet.GetComponent<Mola>().author = transform.parent.gameObject;
+						bullet.GetComponent<Mola>().author = this.transform.root.gameObject;
+						bullet.rigidbody.mass=weapon.val2;
+						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * 50, ForceMode.Force);
+						this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);
 						break;
 				}
 			}

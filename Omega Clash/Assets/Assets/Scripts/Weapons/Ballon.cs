@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 
 public class Ballon : MonoBehaviour {
-
+	
+	public GameObject author;
 	public Transform content;
 	public float time_to_live = 3000;
 	public float speed = 10;
