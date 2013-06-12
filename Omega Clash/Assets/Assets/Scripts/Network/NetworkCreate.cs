@@ -4,9 +4,15 @@ using System.Collections;
 public class NetworkCreate : MonoBehaviour {
 
 	public Transform Prefab;
+	
+	void Start() {
+		if (Network.peerType != NetworkPeerType.Disconnected) {
+			SpawnPlayer();	
+		}
+	}
  
 	void OnServerInitialized()
-	{
+	{	
 	    SpawnPlayer();
 	}
 	void OnConnectedToServer()
