@@ -2,10 +2,12 @@ using UnityEngine;
 using System.Collections;
 
 public class Bazooka : MonoBehaviour {
+	
+	public GameObject author;
 
 	void OnCollisionEnter(Collision other)
 	{
-		if (other.gameObject.tag == "Player")
+		if (other.gameObject.tag == "Player" && other.gameObject != author)
 		{
 			Debug.Log("BATEU BAZZOKA");
 			other.gameObject.rigidbody.AddForce(rigidbody.velocity, ForceMode.Force);
