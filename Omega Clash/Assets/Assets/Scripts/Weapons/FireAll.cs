@@ -25,8 +25,11 @@ public class FireAll : MonoBehaviour {
 	public Weapon[] weapons;
 	public int weapon_selected;
 	public Texture2D hudTexture;
+	public Texture2D crosshairTexture;
 	
 	void OnGUI() {
+		GUI.Label(new Rect((Screen.width-64)/2,(Screen.height-64)/2,64,64),crosshairTexture);
+		
 		Weapon weapon=weapons[weapon_selected];
 		int offsetX=(Screen.width-1024)/2;
 		int offsetY=Screen.height-128;
@@ -112,7 +115,7 @@ public class FireAll : MonoBehaviour {
 						break;
 					case WeaponType.Mola:
 						bullet.GetComponent<Mola>().author = this.transform.root.gameObject;
-						bullet.rigidbody.mass=weapon.val2;
+						//bullet.rigidbody.mass=weapon.val2;
 						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * 50, ForceMode.Force);
 						this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);
 						break;
