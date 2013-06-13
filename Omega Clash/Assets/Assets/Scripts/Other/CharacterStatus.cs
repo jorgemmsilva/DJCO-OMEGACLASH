@@ -4,7 +4,7 @@ using System.Collections;
 public class CharacterStatus : MonoBehaviour {
 	
 	[SerializeField]
-	public enum Team { Red, Blue };
+	public enum Team { Red, Blue, None };
 	
 	[SerializeField]
 	private float m_health;
