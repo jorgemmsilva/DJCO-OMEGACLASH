@@ -1,13 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Assets\Scripts\Movement\RigidbodyFPSController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Assets\Scripts\Weapons\BlackHole.cs">
     <Files>
-      <File FileName="Assets\Assets\Scripts\Movement\RigidbodyFPSController.cs" Line="34" Column="12" />
+      <File FileName="Assets\Assets\Scripts\Movement\RigidbodyFPSController.cs" Line="13" Column="40" />
       <File FileName="Assets\Assets\Scripts\Network\NetworkScript.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Weapons\Ballon.cs" Line="1" Column="1" />
-      <File FileName="Assets\Assets\Scripts\Weapons\FireAll.cs" Line="1" Column="1" />
+      <File FileName="Assets\Assets\Scripts\Weapons\FireAll.cs" Line="97" Column="38" />
       <File FileName="Assets\Assets\Scripts\Weapons\MinaElastica.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Weapons\LaserRays.cs" Line="1" Column="1" />
+      <File FileName="Assets\Assets\Scripts\Weapons\BlackHole.cs" Line="40" Column="68" />
+      <File FileName="Assets\Assets\Scripts\Network\NetworkCreate.cs" Line="35" Column="46" />
+      <File FileName="Assets\Assets\Scripts\Weapons\MagneticField.cs" Line="57" Column="91" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -16,10 +19,10 @@
             <Node name="Assets" expanded="True">
               <Node name="Assets" expanded="True">
                 <Node name="Scripts" expanded="True">
-                  <Node name="Movement" expanded="True">
-                    <Node name="RigidbodyFPSController.cs" selected="True" />
+                  <Node name="Network" expanded="True" />
+                  <Node name="Weapons" expanded="True">
+                    <Node name="BlackHole.cs" selected="True" />
                   </Node>
-                  <Node name="Weapons" expanded="True" />
                 </Node>
               </Node>
             </Node>

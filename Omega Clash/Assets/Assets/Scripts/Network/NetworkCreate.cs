@@ -29,10 +29,10 @@ public class NetworkCreate : MonoBehaviour {
 			{
 				Camera.main.transform.parent = myPlayer;
 				Camera.main.transform.localPosition = new Vector3(0.0f, 1.75f, 0.0f);
-				Camera.main.transform.localRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+				Camera.main.transform.localRotation = Quaternion.identity;
 				child.parent = Camera.main.transform;
 				child.localPosition = new Vector3(0.0f, -0.75f, 1.0f);
-				child.localRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+				child.localRotation = Quaternion.identity;
 				return;
 			}	
 		}

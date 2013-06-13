@@ -1,27 +1,40 @@
 using UnityEngine;
 using System.Collections;
 
-public class BlackHole : MonoBehaviour {
+public class MagneticField : MonoBehaviour {
 	
 	public GameObject author;
 	public float range = 50.0f;
 	public float time_to_live = 20.0f;
-	public float timeActive = 5.0f;
-	public float attractiveForce = 100.0f;
+	public float magneticForce = 1000.0f;
+	public MagneticPole type = MagneticPole.Push;
+	
+	public enum MagneticPole { Push, Pull };
 	
 	private float starttime = 0;
-	private bool active = false;
-
+	
 	void OnCollisionEnter(Collision other)
 	{
-		if (!active && other.gameObject != author)
+		if (other.gameObject != author)
 		{
-			this.rigidbody.velocity = Vector3.zero;
-			this.GetComponent<TrailRenderer>().enabled = false;
-			this.rigidbody.isKinematic = true;
-			starttime = 0;
-			time_to_live = timeActive;
-			active = true;
+			Collider[] Colliders;
+				
+			Colliders = Physics.OverlapSphere(transform.position, range);
+			
+			float Force = magneticForce;
+			if ( type == MagneticPole.Pull)
+				Force = -Force;
+				
+			for(int i = 0; i<Colliders.Length; i++)
+			{
+				if(Colliders[i].gameObject.tag == "Player")
+				{
+					Colliders[i].rigidbody.AddExplosionForce(Force * 50, this.transform.position, range, 1.0f,ForceMode.Force);
+				}
+			}
+			
+			Destroy(this.gameObject);
+			Destroy(this);
 		}
     }
 	
@@ -33,31 +46,20 @@ public class BlackHole : MonoBehaviour {
 				
 			Colliders = Physics.OverlapSphere(transform.position, range);
 			
+			float Force = magneticForce;
+			if ( type == MagneticPole.Pull)
+				Force = -Force;
+			
 			for(int i = 0; i<Colliders.Length; i++)
 			{
 				if(Colliders[i].gameObject.tag == "Player")
 				{
-					Colliders[i].rigidbody.AddExplosionForce(attractiveForce * 10 * timeActive * 50, this.transform.position, range, 1.0f,ForceMode.Force);
+					Colliders[i].rigidbody.AddExplosionForce(Force * 50, this.transform.position, range, 1.0f,ForceMode.Force);
 				}
 			}
 			
 			Destroy(this.gameObject);
 			Destroy(this);
-		}
-		
-		if(active)
-		{
-			Collider[] Colliders;
-				
-			Colliders = Physics.OverlapSphere(transform.position, range);
-			
-			for(int i = 0; i<Colliders.Length; i++)
-			{
-				if(Colliders[i].gameObject.tag == "Player")
-				{
-					Colliders[i].rigidbody.AddExplosionForce(-attractiveForce * 50, this.transform.position, range, 1.0f,ForceMode.Force);
-				}
-			}
 		}
 	}
 	

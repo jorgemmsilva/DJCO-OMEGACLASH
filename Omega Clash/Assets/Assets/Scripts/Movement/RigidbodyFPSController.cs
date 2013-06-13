@@ -11,7 +11,6 @@ public class RigidbodyFPSController : MonoBehaviour {
 	
 	public float gravity = 10.0f;
 	public float maxVelocityChange = 0.4f;
-	public float maxVelocity = 20.0f;
 	public bool canJump = true;
 	public float jumpHeight = 2.0f;
 	public float rotatexspeed = 1.0F;
@@ -35,7 +34,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 		{
 			foreach (Transform child in gameObject.transform)
 			{
-				child.renderer.enabled = false;
+				if (child.name == "baseMale") child.renderer.enabled = false;
 			}
 		}
 	}
@@ -97,7 +96,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 				
 				
 				RaycastHit info = new RaycastHit();
-				if(Physics.Raycast(rigidbody.transform.position, velocityChange, out info, 2.0f))
+				if(Physics.Raycast(rigidbody.transform.position + new Vector3(0,1.25f,0), velocityChange, out info, 2.0f))
 				{
 					if(info.normal.normalized.y>0.4) rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
 				}

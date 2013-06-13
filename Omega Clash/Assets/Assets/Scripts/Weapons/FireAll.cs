@@ -92,6 +92,10 @@ public class FireAll : MonoBehaviour {
 						this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);
 						break;
 					case WeaponType.CampoMagnetico:
+						bullet.GetComponent<MagneticField>().author = this.transform.root.gameObject;
+						bullet.rigidbody.mass=weapon.val2;
+						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * 50, ForceMode.Force);
+						this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);
 						break;
 					case WeaponType.Ilusao:
 						bullet.GetComponent<ilussionScript>().time_to_live = weapon.val1;
