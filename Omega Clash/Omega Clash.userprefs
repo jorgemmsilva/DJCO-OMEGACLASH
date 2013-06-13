@@ -1,16 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Assets\Scripts\Other\AutoDestroy.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Assets\Scripts\Other\CharacterStatus.cs">
     <Files>
-      <File FileName="Assets\Assets\Scripts\Other\CharacterStatus.cs" Line="58" Column="1" />
-      <File FileName="Assets\Assets\Scripts\Network\NetworkCreate.cs" Line="24" Column="63" />
+      <File FileName="Assets\Assets\Scripts\Other\CharacterStatus.cs" Line="26" Column="14" />
+      <File FileName="Assets\Assets\Scripts\Network\NetworkCreate.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Network\NetworkScript.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Movement\RigidbodyFPSController.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Weapons\Mola.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Weapons\FireAll.cs" Line="1" Column="1" />
-      <File FileName="Assets\Assets\Scripts\Weapons\LaserRays.cs" Line="94" Column="91" />
+      <File FileName="Assets\Assets\Scripts\Weapons\LaserRays.cs" Line="1" Column="1" />
       <File FileName="Assets\Assets\Scripts\Other\AutoDestroy.cs" Line="12" Column="1" />
-      <File FileName="Assets\Assets\Scripts\Weapons\BlackHole.cs" Line="31" Column="4" />
+      <File FileName="Assets\Assets\Scripts\Weapons\BlackHole.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -21,7 +21,7 @@
                 <Node name="Scripts" expanded="True">
                   <Node name="Network" expanded="True" />
                   <Node name="Other" expanded="True">
-                    <Node name="AutoDestroy.cs" selected="True" />
+                    <Node name="CharacterStatus.cs" selected="True" />
                   </Node>
                   <Node name="Weapons" expanded="True" />
                 </Node>

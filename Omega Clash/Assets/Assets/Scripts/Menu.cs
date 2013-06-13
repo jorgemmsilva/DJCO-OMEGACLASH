@@ -7,6 +7,7 @@ public class Menu : MonoBehaviour {
 	public string username="Player";
 	public string ip;
  	public int connectionPort = 25001;
+	public CharacterStatus.Team team = CharacterStatus.Team.None;
 	
 	void OnGUI() {
 		GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),menuTexture);
@@ -20,6 +21,7 @@ public class Menu : MonoBehaviour {
 		}
 		if(GUI.Button(new Rect((Screen.width-128)/2+64,450,128,32),"Join Game")) {
 			Network.Connect(ip, connectionPort);
+			Application.LoadLevel(1);
 		}
 		ip=GUI.TextArea(new Rect((Screen.width-128)/2-64,450,128,32),ip);
 	}
@@ -32,5 +34,9 @@ public class Menu : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+	
+	void Awake() {
+		DontDestroyOnLoad (this);
 	}
 }
