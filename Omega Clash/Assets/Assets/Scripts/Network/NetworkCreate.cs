@@ -21,7 +21,11 @@ public class NetworkCreate : MonoBehaviour {
 	}
 	void SpawnPlayer()
 	{
-    	Transform myPlayer = (Transform)Network.Instantiate(Prefab, transform.position, transform.rotation, 0);
+		GameObject [] spawns = GameObject.FindGameObjectsWithTag("Respawn");
+		Transform spawn_point = spawns[Random.Range(0,spawns.Length)].transform;
+		
+		
+    	Transform myPlayer = (Transform)Network.Instantiate(Prefab, spawn_point.position, spawn_point.rotation, 0);
 		foreach (Transform child in myPlayer)
 		{
 		  	//child is your child transform

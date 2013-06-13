@@ -4,20 +4,23 @@ using System.Collections.Generic;
 
 public class LaserRays : MonoBehaviour {
 	
+	public Transform LaserPoint;
 	public Transform LaserRay;
 	
-
 	public List<Transform> before = new List<Transform>();
 	
 	// Update is called once per frame
 	void FixedUpdate ()
 	{
+		if (!transform.root.root.networkView.isMine)
+			return;
+		
 		if(before.Count!=0)
 		{
 			for(int i=0;i<before.Count;i++)
 			{
 				Destroy(before[i].gameObject);
-				Destroy (before[i]);
+				Destroy(before[i]);
 			}
 			before.Clear();
 		}
@@ -39,14 +42,25 @@ public class LaserRays : MonoBehaviour {
 				
 				if (Physics.Raycast(origin.position, fwd, out info, 1000.0f))
 				{
-					Vector3 halfway = origin.position + ((info.point - origin.position)/2);
-					float halfdistance = ((info.point - origin.position).magnitude)/2;
 					Transform myray;
-					myray=(Transform)Network.Instantiate(LaserRay, halfway, origin.rotation, 0);
-					myray.localScale += new Vector3(0,halfdistance,0);
-					myray.Rotate(new Vector3(90,0,0));
+					myray=(Transform)Network.Instantiate(LaserPoint, origin.position, origin.rotation, 0);
+					Destroy(myray.gameObject);
+					Destroy(myray);
+					//before.Add(myray);
 					
-					before.Add(myray);
+					Transform myray_dest;
+					myray_dest=(Transform)Network.Instantiate(LaserPoint, info.point, origin.rotation, 0);
+					Destroy(myray_dest.gameObject);
+					Destroy(myray_dest);
+					//before.Add(myray_dest);
+					
+					Vector3 halfway = origin.position + ((info.point - origin.position)/2);
+                    float halfdistance = ((info.point - origin.position).magnitude)/2;
+                    Transform myray_middle;
+                    myray_middle=(Transform)Instantiate(LaserRay, halfway, origin.rotation);
+                    myray_middle.localScale += new Vector3(0,halfdistance,0);
+                    myray_middle.Rotate(new Vector3(90,0,0));
+                    before.Add(myray_middle);
 	
 					if(info.collider.gameObject.tag == "Mirror")
 					{
@@ -55,7 +69,6 @@ public class LaserRays : MonoBehaviour {
 	
 						origin.position = info.point;
 						origin.forward = reflection;
-						Debug.DrawRay(origin.position,origin.forward,Color.red,2);
 					}
 					else
 					{						
@@ -64,13 +77,24 @@ public class LaserRays : MonoBehaviour {
 				}
 				else
 				{
-					Vector3 halfway = origin.position + (fwd * 500);
 					Transform myray;
-					myray=(Transform)Network.Instantiate(LaserRay, halfway, origin.rotation, 0);
-					myray.localScale += new Vector3(0,500,0);
-					myray.Rotate(new Vector3(90,0,0));
+					myray=(Transform)Network.Instantiate(LaserPoint, origin.position, origin.rotation, 0);
+					Destroy(myray.gameObject);
+					Destroy(myray);
+					//before.Add(myray);
 					
-					before.Add(myray);
+					Transform myray_dest;
+					myray_dest=(Transform)Network.Instantiate(LaserPoint, origin.position + (fwd * 1000), origin.rotation, 0);
+					Destroy(myray_dest.gameObject);
+					Destroy(myray_dest);
+					//before.Add(myray_dest);
+					
+					Vector3 halfway = origin.position + (fwd * 500);
+                    Transform myray_middle;
+                    myray_middle=(Transform)Instantiate(LaserRay, halfway, origin.rotation);
+                    myray_middle.localScale += new Vector3(0,500,0);
+                    myray_middle.Rotate(new Vector3(90,0,0));
+                    before.Add(myray_middle);
 				}
 			}
 		}

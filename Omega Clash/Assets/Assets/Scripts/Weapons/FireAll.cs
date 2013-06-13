@@ -28,6 +28,9 @@ public class FireAll : MonoBehaviour {
 	public Texture2D crosshairTexture;
 	
 	void OnGUI() {
+		if (!transform.root.root.networkView.isMine)
+			return;
+		
 		GUI.Label(new Rect((Screen.width-64)/2,(Screen.height-64)/2,64,64),crosshairTexture);
 		
 		Weapon weapon=weapons[weapon_selected];
@@ -51,6 +54,9 @@ public class FireAll : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (!transform.root.root.networkView.isMine)
+			return;
+		
 		float delta=Input.GetAxis("Mouse ScrollWheel");
 		if (Input.GetKey(KeyCode.LeftShift)) {
 			weapons[weapon_selected].val2+=weapons[weapon_selected].val2Scale*delta;
