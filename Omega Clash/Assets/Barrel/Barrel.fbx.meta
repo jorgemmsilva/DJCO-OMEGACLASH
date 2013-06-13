@@ -10,6 +10,7 @@ ModelImporter:
     2300000: Barrel
     3300000: Barrel
     4300000: Barrel
+    6400000: Barrel
     11100000: //RootNode
   materials:
     importMaterials: 1
@@ -29,7 +30,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 1
@@ -61,5 +62,5 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   additionalBone: 1
-  animationType: 1
+  animationType: 0
   userData: 
