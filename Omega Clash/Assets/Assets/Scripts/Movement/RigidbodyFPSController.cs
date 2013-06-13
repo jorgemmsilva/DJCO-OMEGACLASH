@@ -68,7 +68,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 				targetVelocity *= sprintMultiplier;
 			
 			if(rigidbody.velocity.magnitude < minVelocityTreshold)
-					rigidbody.velocity = Vector3.zero;
+				rigidbody.velocity = new Vector3(0,rigidbody.velocity.y,0);
 			
 			if(targetVelocity.magnitude>0.0)
 			{
