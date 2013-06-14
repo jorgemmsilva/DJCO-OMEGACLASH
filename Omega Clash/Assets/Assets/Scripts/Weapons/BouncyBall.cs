@@ -3,32 +3,23 @@ using System.Collections;
 
 public class BouncyBall : MonoBehaviour {
 	
-	public GameObject author;
+	public int authorId;
 	public float time_to_live = 20.0f;
 	public float explosiveForce = 1000.0f;
 	public float range = 40.0f;
 	
 	private float starttime = 0;
 	
-	void FixedUpdate () {
-		starttime +=Time.deltaTime;
-		if (starttime > time_to_live)
+	void FixedUpdate ()
+	{
+		if(networkView.isMine)
 		{
-			Collider[] Colliders;
-				
-			Colliders = Physics.OverlapSphere(transform.position, range);
-			
-			for(int i = 0; i<Colliders.Length; i++)
+			starttime +=Time.deltaTime;
+			if (starttime > time_to_live)
 			{
-				if(Colliders[i].gameObject.tag == "Player")
-				{
-					Debug.Log("I GOT THE POWA");
-					Colliders[i].rigidbody.AddExplosionForce(explosiveForce * 50, this.transform.position, range, 1.0f,ForceMode.Force);
-				}
+				this.gameObject.GetComponent<NetworkView>().RPC ("Explode", RPCMode.All);
+				Network.Destroy(GetComponent<NetworkView>().viewID);
 			}
-			
-			Destroy(this.gameObject);
-			Destroy(this);
 		}
 	}
 	
@@ -39,21 +30,39 @@ public class BouncyBall : MonoBehaviour {
 	    if (stream.isWriting)
 	    {
 		    Vector3 myPosition = transform.position;
-		    stream.Serialize(ref myPosition);
-			
-			Quaternion myRotation = transform.rotation;
-			stream.Serialize(ref myRotation);	
-			
+		    stream.Serialize(ref myPosition);			
 	    }
 	    else
 	    {
 	        Vector3 receivedPosition = Vector3.zero;
 	        stream.Serialize(ref receivedPosition); //"Decode" it and receive it
 	        transform.position = receivedPosition;
-			
-			Quaternion receivedRotation = new Quaternion();
-	        stream.Serialize(ref receivedRotation); //"Decode" it and receive it
-	        transform.rotation = receivedRotation;
 	    }
+	}
+	
+	[RPC]
+	void Initialize(int id, float time)
+	{
+		authorId = id;
+		time_to_live = time;
+	}
+	
+	[RPC]
+	void Explode()
+	{
+		Collider[] Colliders;
+			
+		Colliders = Physics.OverlapSphere(transform.position, range);
+		
+		for(int i = 0; i<Colliders.Length; i++)
+		{
+			if(Colliders[i].gameObject.tag == "Player" && Colliders[i].gameObject.networkView.isMine)
+			{
+				Debug.Log("HERP DERP");
+				float damage=10.0f;
+				Colliders[i].gameObject.GetComponent<NetworkView>().RPC ("TakeDMG", RPCMode.All, damage, authorId);
+				Colliders[i].rigidbody.AddExplosionForce(explosiveForce * 50, this.transform.position, range, 1.0f,ForceMode.Force);
+			}
+		}
 	}
 }

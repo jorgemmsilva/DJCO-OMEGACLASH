@@ -5,9 +5,9 @@ public class Menu : MonoBehaviour {
 	public Texture2D menuTexture;
 	public Texture2D logoTexture;
 	public string username="Player";
-	public string ip;
+	public string ip = "127.0.0.1";
  	public int connectionPort = 25001;
-	public int team = 0;
+	public int team = 1;
 	
 	void OnGUI() {
 		GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),menuTexture);
@@ -25,7 +25,7 @@ public class Menu : MonoBehaviour {
 			Network.InitializeServer(32, connectionPort, false);
 			Application.LoadLevel(1);
 		}
-		if(GUI.Button(new Rect((Screen.width-128)/2+64,450,128,32),"Join as Game")) {
+		if(GUI.Button(new Rect((Screen.width-128)/2+64,450,128,32),"Join Game")) {
 			Network.Connect(ip, connectionPort);
 			Application.LoadLevel(1);
 		}

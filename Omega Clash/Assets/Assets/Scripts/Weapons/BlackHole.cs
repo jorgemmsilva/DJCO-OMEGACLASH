@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BlackHole : MonoBehaviour {
 	
-	public GameObject author;
+	public int authorId;
 	public float range = 50.0f;
 	public float time_to_live = 20.0f;
 	public float timeActive = 5.0f;
@@ -14,35 +14,30 @@ public class BlackHole : MonoBehaviour {
 
 	void OnCollisionEnter(Collision other)
 	{
-		if (!active && other.gameObject != author)
+		if (networkView.isMine)
 		{
-			this.rigidbody.velocity = Vector3.zero;
-			this.GetComponent<TrailRenderer>().enabled = false;
-			this.rigidbody.isKinematic = true;
-			starttime = 0;
-			time_to_live = timeActive;
-			active = true;
+			if (!active && (other.gameObject.tag!="Player" || other.gameObject.GetComponent<CharacterStatus>().id != authorId))
+			{
+				this.rigidbody.velocity = Vector3.zero;
+				this.GetComponent<TrailRenderer>().enabled = false;
+				this.rigidbody.isKinematic = true;
+				starttime = 0;
+				time_to_live = timeActive;
+				this.gameObject.GetComponent<NetworkView>().RPC ("Activate", RPCMode.All);
+			}
 		}
     }
 	
-	void FixedUpdate () {
-		starttime +=Time.deltaTime;
-		if (starttime > time_to_live)
+	void FixedUpdate ()
+	{
+		if(networkView.isMine)
 		{
-			Collider[] Colliders;
-				
-			Colliders = Physics.OverlapSphere(transform.position, range);
-			
-			for(int i = 0; i<Colliders.Length; i++)
+			starttime +=Time.deltaTime;
+			if (starttime > time_to_live)
 			{
-				if(Colliders[i].gameObject.tag == "Player")
-				{
-					Colliders[i].rigidbody.AddExplosionForce(attractiveForce * 10 * timeActive * 50, this.transform.position, range, 1.0f,ForceMode.Force);
-				}
+				this.gameObject.GetComponent<NetworkView>().RPC ("Explode", RPCMode.All);
+				Network.Destroy(GetComponent<NetworkView>().viewID);
 			}
-			
-			Destroy(this.gameObject);
-			Destroy(this);
 		}
 		
 		if(active)
@@ -53,7 +48,7 @@ public class BlackHole : MonoBehaviour {
 			
 			for(int i = 0; i<Colliders.Length; i++)
 			{
-				if(Colliders[i].gameObject.tag == "Player")
+				if(Colliders[i].gameObject.tag == "Player" && Colliders[i].gameObject.networkView.isMine)
 				{
 					Colliders[i].rigidbody.AddExplosionForce(-attractiveForce * 50, this.transform.position, range, 1.0f,ForceMode.Force);
 				}
@@ -70,19 +65,42 @@ public class BlackHole : MonoBehaviour {
 		    Vector3 myPosition = transform.position;
 		    stream.Serialize(ref myPosition);
 			
-			Quaternion myRotation = transform.rotation;
-			stream.Serialize(ref myRotation);	
-			
 	    }
 	    else
 	    {
 	        Vector3 receivedPosition = Vector3.zero;
 	        stream.Serialize(ref receivedPosition); //"Decode" it and receive it
 	        transform.position = receivedPosition;
+		}
+	}
+	
+	[RPC]
+	void Initialize(int id,float force, float Ontime)
+	{
+		authorId = id;
+		attractiveForce = force;
+		timeActive = Ontime;
+	}
+	
+	[RPC]
+	void Activate()
+	{
+		active = true;
+	}
+	
+	[RPC]
+	void Explode()
+	{
+		Collider[] Colliders;
 			
-			Quaternion receivedRotation = new Quaternion();
-	        stream.Serialize(ref receivedRotation); //"Decode" it and receive it
-	        transform.rotation = receivedRotation;
-	    }
+		Colliders = Physics.OverlapSphere(transform.position, range);
+		
+		for(int i = 0; i<Colliders.Length; i++)
+		{
+			if(Colliders[i].gameObject.tag == "Player" && Colliders[i].gameObject.networkView.isMine)
+			{
+				Colliders[i].rigidbody.AddExplosionForce(attractiveForce * 10 * timeActive * 50, this.transform.position, range, 1.0f,ForceMode.Force);
+			}
+		}
 	}
 }

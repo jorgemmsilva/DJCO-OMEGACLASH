@@ -19,6 +19,8 @@ public class RigidbodyFPSController : MonoBehaviour {
 	public float upperRotationVertical = 80.0f;
 	public float minVelocityTreshold = 1.0f;
 	
+	public AudioClip splatClip;
+	
 	private bool grounded = false;
 	private Vector3 characterRotate = Vector3.zero;
 	private Vector3 cameraRotate = Vector3.zero;
@@ -41,7 +43,7 @@ public class RigidbodyFPSController : MonoBehaviour {
  
 	void FixedUpdate () {
 		//constant no animation/normal here
-		animation.CrossFade("idle");
+		animation.CrossFade("sprint");
 		if(networkView.isMine)
 		{
 			characterRotate.y += Input.GetAxis("Mouse X") * rotatexspeed;
@@ -123,6 +125,23 @@ public class RigidbodyFPSController : MonoBehaviour {
 	void OnCollisionStay () {
 	    grounded = true;    
 	}
+	
+	void OnCollisionEnter(Collision other)
+	{
+		if(networkView.isMine && other.gameObject.tag!="Projectil")
+		{
+			Vector3 v1=other.relativeVelocity;
+			float dotProduct=0;
+			foreach(ContactPoint c in other.contacts) {
+				dotProduct=Mathf.Max(dotProduct,Mathf.Abs(Vector3.Dot(c.normal,v1)));	
+			}
+			if(dotProduct>22) {
+				this.audio.clip=splatClip;
+				this.audio.Play();
+				this.gameObject.GetComponent<NetworkView>().RPC ("TakeDMG", RPCMode.All, 2*dotProduct/3,0);
+			}
+		}
+    }
  
 	float CalculateJumpVerticalSpeed () {
 	    // From the jump height and gravity we deduce the upwards speed 
@@ -140,7 +159,7 @@ public class RigidbodyFPSController : MonoBehaviour {
 		    stream.Serialize(ref myPosition);
 			
 			Quaternion myRotation = transform.rotation;
-			stream.Serialize(ref myRotation);	
+			stream.Serialize(ref myRotation);
 			
 	    }
 	    else

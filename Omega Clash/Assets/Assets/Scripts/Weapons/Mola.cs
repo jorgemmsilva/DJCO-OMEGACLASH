@@ -2,20 +2,18 @@ using UnityEngine;
 using System.Collections;
 
 public class Mola : MonoBehaviour {
-	public GameObject author;
+	public int authorId;
+	public float constant;
 	
 	void OnCollisionEnter(Collision other)
 	{
-		if (other.gameObject.tag == "Player" && other.gameObject != author)
+		if(networkView.isMine)
 		{
-			Debug.Log("author:" + author + " other"+ other.gameObject);
-			SpringJoint springJoint = author.AddComponent<SpringJoint>();
-			springJoint.maxDistance = 0.0f;
-			springJoint.minDistance = 0.5f;
-			springJoint.spring = 1000.0f;
-			springJoint.damper = 2 * Mathf.Sqrt(other.gameObject.rigidbody.mass * springJoint.spring);
-			springJoint.connectedBody = other.gameObject.rigidbody;
-			//Destroy (this.gameObject);
+			if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<CharacterStatus>().id != authorId)
+			{
+				this.gameObject.GetComponent<NetworkView>().RPC ("Join", RPCMode.All, authorId, other.gameObject.GetComponent<CharacterStatus>().id);
+				Network.Destroy(GetComponent<NetworkView>().viewID);
+			}
 		}
     }
 	
@@ -27,20 +25,47 @@ public class Mola : MonoBehaviour {
 	    {
 		    Vector3 myPosition = transform.position;
 		    stream.Serialize(ref myPosition);
-			
-			Quaternion myRotation = transform.rotation;
-			stream.Serialize(ref myRotation);	
-			
 	    }
 	    else
 	    {
 	        Vector3 receivedPosition = Vector3.zero;
 	        stream.Serialize(ref receivedPosition); //"Decode" it and receive it
 	        transform.position = receivedPosition;
-			
-			Quaternion receivedRotation = new Quaternion();
-	        stream.Serialize(ref receivedRotation); //"Decode" it and receive it
-	        transform.rotation = receivedRotation;
 	    }
+	}
+	
+	[RPC]
+	void Initialize(int id, float incconstant)
+	{
+		authorId = id;
+		constant = incconstant;
+	}
+	
+	[RPC]
+	void Join(int firstAvatarId, int secondAvatarId)
+	{
+		GameObject[] avatars = GameObject.FindGameObjectsWithTag("Player");
+		GameObject firstAvatar = null;
+		GameObject secondAvatar = null;
+		
+		foreach (GameObject avatar in avatars)
+		{
+            if (avatar.GetComponent<CharacterStatus>().id == firstAvatarId)
+			{
+				firstAvatar = avatar;
+            }
+			if (avatar.GetComponent<CharacterStatus>().id == secondAvatarId)
+			{
+				secondAvatar = avatar;
+            }
+        }
+		
+		SpringJoint springJoint = firstAvatar.AddComponent<SpringJoint>();
+		firstAvatar.AddComponent<MolaDestroy>();
+		springJoint.maxDistance = 0.0f;
+		springJoint.minDistance = 0.5f;
+		springJoint.spring = constant;
+		springJoint.damper = 2 * Mathf.Sqrt(secondAvatar.rigidbody.mass * springJoint.spring);
+		springJoint.connectedBody = secondAvatar.rigidbody;
 	}
 }

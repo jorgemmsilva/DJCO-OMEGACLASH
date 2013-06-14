@@ -18,6 +18,7 @@ public class CharacterStatus : MonoBehaviour {
 	[SerializeField]
 	private float m_damage;
 	
+	public AudioClip deathClip;
 	public Material ninjaMaterial;
 	public Material pirateMaterial;
 	
@@ -29,9 +30,10 @@ public class CharacterStatus : MonoBehaviour {
 			m_name=((Menu)menu.GetComponent<Menu>()).username;
 			m_team=((Menu)menu.GetComponent<Menu>()).team;
 			Destroy(menu);
+				
+			if (m_team==1) {transform.FindChild("baseMale").renderer.material=ninjaMaterial;}
+			else {this.transform.FindChild("baseMale").renderer.material=pirateMaterial;}
 		}
-		if (m_team==1) {transform.FindChild("baseMale").renderer.material=ninjaMaterial;}
-		else if (m_team==2) {this.transform.FindChild("baseMale").renderer.material=pirateMaterial;}
 	}
 	
 	public int id
@@ -84,7 +86,9 @@ public class CharacterStatus : MonoBehaviour {
 	    {
 		    stream.Serialize(ref m_id);
 			stream.Serialize(ref m_health);
-			stream.Serialize(ref m_team);	
+			stream.Serialize(ref m_team);
+			stream.Serialize(ref m_kills);
+			stream.Serialize(ref m_deaths);
 			
 	    }
 	    else
@@ -97,24 +101,64 @@ public class CharacterStatus : MonoBehaviour {
 	        stream.Serialize(ref receivedhealth); //"Decode" it and receive it
 	        health = receivedhealth;
 			
-			int receivedteam = 0;
+			int receivedteam = m_team;
 	        stream.Serialize(ref receivedteam); //"Decode" it and receive it
-	        
-			if(team != receivedteam)
-			{
-				team = receivedteam;				
-				if (m_team==1) {transform.FindChild("baseMale").renderer.material=ninjaMaterial;}
-				else if (m_team==2) {this.transform.FindChild("baseMale").renderer.material=pirateMaterial;}
-			}
-			//string receivedname;
-	        //stream.Serialize(ref receivedname); //"Decode" it and receive it
-	        //name = receivedname;
+	        team = receivedteam;
+		
+			if (m_team==1) {transform.FindChild("baseMale").renderer.material=ninjaMaterial;}
+			else {this.transform.FindChild("baseMale").renderer.material=pirateMaterial;}
+			
+			
+			int receivedkills = 0;
+	        stream.Serialize(ref receivedkills); //"Decode" it and receive it
+	        kills = receivedkills;
+			
+			int receiveddeaths = 0;
+	        stream.Serialize(ref receiveddeaths); //"Decode" it and receive it
+	        deaths = receiveddeaths;
 	    }
 	}
 	
 	[RPC]
-	void TakeDMG (float damage)
+	void TakeDMG (float damage, int authorId)
 	{
-		health -= damage;
+		if(networkView.isMine)
+		{
+			health -= damage;
+			if(health <= 0)
+			{
+				this.audio.clip=deathClip;
+				this.audio.Play();
+				deaths++;
+				health = 100;
+				GameObject [] spawns = GameObject.FindGameObjectsWithTag("Respawn");
+				Transform spawn_point = spawns[Random.Range(0,spawns.Length)].transform;
+				this.transform.position = spawn_point.position;
+				this.transform.rotation = spawn_point.rotation;
+				this.rigidbody.velocity = Vector3.zero;
+				
+				GameObject[] avatars = GameObject.FindGameObjectsWithTag("Player");
+				GameObject firstAvatar = null;
+				
+				foreach (GameObject avatar in avatars)
+				{
+		            if (avatar.GetComponent<CharacterStatus>().id == authorId)
+					{
+						firstAvatar = avatar;
+						break;
+		            }
+				}
+				firstAvatar.GetComponent<NetworkView>().RPC ("AddKill", RPCMode.All);
+			}
+		}
+	}
+	
+	[RPC]
+	void AddKill ()
+	{
+		if(networkView.isMine)
+		{
+			kills++;
+		}
 	}
 }

@@ -24,16 +24,16 @@ public class ilussionScript : MonoBehaviour {
 	}
  
 	void FixedUpdate () {
-		starttime +=Time.deltaTime;
-		if (starttime > time_to_live)
-		{
-			Destroy(this.gameObject);
-			Destroy(this);
-		}
 		//constant no animation/normal here
 		animation.CrossFade("sprint");
 		if(networkView.isMine)
 		{
+			starttime +=Time.deltaTime;
+			if (starttime > time_to_live)
+			{
+				Network.Destroy(GetComponent<NetworkView>().viewID);
+			}
+			
 		    if (grounded)
 			{
 				
@@ -87,5 +87,13 @@ public class ilussionScript : MonoBehaviour {
 			
 			rigidbody.velocity = Vector3.zero;
 	    }
+	}
+	
+	[RPC]
+	void Initialize(int team, float inctime)
+	{
+		if (team==1) {transform.FindChild("baseMale").renderer.material=this.gameObject.GetComponent<CharacterStatus>().ninjaMaterial;}
+		else {this.transform.FindChild("baseMale").renderer.material=this.gameObject.GetComponent<CharacterStatus>().pirateMaterial;}
+		time_to_live = inctime;
 	}
 }

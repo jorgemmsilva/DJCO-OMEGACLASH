@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MagneticField : MonoBehaviour {
 	
-	public GameObject author;
+	public int authorId;
 	public float range = 50.0f;
 	public float time_to_live = 20.0f;
 	public float magneticForce = 1000.0f;
@@ -15,51 +15,25 @@ public class MagneticField : MonoBehaviour {
 	
 	void OnCollisionEnter(Collision other)
 	{
-		if (other.gameObject != author)
+		if (networkView.isMine)
 		{
-			Collider[] Colliders;
-				
-			Colliders = Physics.OverlapSphere(transform.position, range);
-			
-			float Force = magneticForce;
-			if ( type == MagneticPole.Pull)
-				Force = -Force;
-				
-			for(int i = 0; i<Colliders.Length; i++)
+			if (other.gameObject.tag!="Player" || other.gameObject.GetComponent<CharacterStatus>().id != authorId)
 			{
-				if(Colliders[i].gameObject.tag == "Player")
-				{
-					Colliders[i].rigidbody.AddExplosionForce(Force * 50, this.transform.position, range, 1.0f,ForceMode.Force);
-				}
+				this.gameObject.GetComponent<NetworkView>().RPC ("Explode", RPCMode.All);
+				Network.Destroy(GetComponent<NetworkView>().viewID);
 			}
-			
-			Destroy(this.gameObject);
-			Destroy(this);
 		}
     }
 	
 	void FixedUpdate () {
-		starttime +=Time.deltaTime;
-		if (starttime > time_to_live)
+		if(networkView.isMine)
 		{
-			Collider[] Colliders;
-				
-			Colliders = Physics.OverlapSphere(transform.position, range);
-			
-			float Force = magneticForce;
-			if ( type == MagneticPole.Pull)
-				Force = -Force;
-			
-			for(int i = 0; i<Colliders.Length; i++)
+			starttime +=Time.deltaTime;
+			if (starttime > time_to_live)
 			{
-				if(Colliders[i].gameObject.tag == "Player")
-				{
-					Colliders[i].rigidbody.AddExplosionForce(Force * 50, this.transform.position, range, 1.0f,ForceMode.Force);
-				}
+				this.gameObject.GetComponent<NetworkView>().RPC ("Explode", RPCMode.All);
+				Network.Destroy(GetComponent<NetworkView>().viewID);
 			}
-			
-			Destroy(this.gameObject);
-			Destroy(this);
 		}
 	}
 	
@@ -72,19 +46,38 @@ public class MagneticField : MonoBehaviour {
 		    Vector3 myPosition = transform.position;
 		    stream.Serialize(ref myPosition);
 			
-			Quaternion myRotation = transform.rotation;
-			stream.Serialize(ref myRotation);	
-			
 	    }
 	    else
 	    {
 	        Vector3 receivedPosition = Vector3.zero;
 	        stream.Serialize(ref receivedPosition); //"Decode" it and receive it
 	        transform.position = receivedPosition;
+		}
+	}
+	
+	[RPC]
+	void Initialize(int id,float force)
+	{
+		magneticForce=force;
+		authorId = id;
+	}
+	
+	[RPC]
+	void Explode()
+	{
+		Collider[] Colliders;
 			
-			Quaternion receivedRotation = new Quaternion();
-	        stream.Serialize(ref receivedRotation); //"Decode" it and receive it
-	        transform.rotation = receivedRotation;
-	    }
+		Colliders = Physics.OverlapSphere(transform.position, range);
+		float Force = magneticForce;
+		if ( type == MagneticPole.Pull)
+			Force = -Force;
+	
+		for(int i = 0; i<Colliders.Length; i++)
+		{
+			if(Colliders[i].gameObject.tag == "Player" && Colliders[i].gameObject.networkView.isMine)
+			{
+				Colliders[i].rigidbody.AddExplosionForce(Force * 50, this.transform.position, range, 1.0f,ForceMode.Force);
+			}
+		}
 	}
 }

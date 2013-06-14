@@ -70,6 +70,12 @@ public class LaserRays : MonoBehaviour {
 						origin.position = info.point;
 						origin.forward = reflection;
 					}
+					else if(info.collider.gameObject.tag == "Player")
+					{
+						float damage=1.0f;
+						info.collider.gameObject.GetComponent<NetworkView>().RPC ("TakeDMG", RPCMode.All, damage, 0);
+						return;
+					}
 					else
 					{						
 						return;
