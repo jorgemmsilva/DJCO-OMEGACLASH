@@ -84,7 +84,7 @@ public class FireAll : MonoBehaviour {
 					case WeaponType.Balao:
 						break;
 					case WeaponType.Bazooka:
-						bullet.GetComponent<Bazooka>().author = this.transform.root.gameObject;
+						bullet.GetComponent<Bazooka>().authorId = this.transform.root.gameObject.GetComponent<CharacterStatus>().id;
 						bullet.rigidbody.mass=weapon.val2;
 						bullet.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * 50, ForceMode.Force);
 						this.transform.root.rigidbody.AddForce(transform.TransformDirection(Vector3.forward) * weapon.val1 * (-50), ForceMode.Force);

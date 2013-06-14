@@ -4,14 +4,13 @@ using System.Collections;
 public class CharacterStatus : MonoBehaviour {
 	
 	[SerializeField]
-	public enum Team { Red, Blue, None };
-	
+	private int m_id;
 	[SerializeField]
 	private string m_name;
 	[SerializeField]
 	private float m_health;
 	[SerializeField]
-	private Team m_team;
+	private int m_team;
 	[SerializeField]
 	private int m_kills;
 	[SerializeField]
@@ -19,16 +18,33 @@ public class CharacterStatus : MonoBehaviour {
 	[SerializeField]
 	private float m_damage;
 	
+	public Material ninjaMaterial;
+	public Material pirateMaterial;
+	
 	public void Start() {
 		m_health=100;
-		m_team=Team.None;
+		m_team=0;
 		GameObject menu=GameObject.FindGameObjectWithTag("Menu");
-		if (menu) {
+		if (menu && networkView.isMine) {
 			m_name=((Menu)menu.GetComponent<Menu>()).username;
 			m_team=((Menu)menu.GetComponent<Menu>()).team;
 			Destroy(menu);
 		}
+		if (m_team==1) {transform.FindChild("baseMale").renderer.material=ninjaMaterial;}
+		else if (m_team==2) {this.transform.FindChild("baseMale").renderer.material=pirateMaterial;}
 	}
+	
+	public int id
+    {
+        get { return m_id; }
+        set { m_id = value; }
+    }
+	
+	public string name
+    {
+        get { return m_name; }
+        set { m_name = value; }
+    }
 	
 	public float health
     {
@@ -36,7 +52,7 @@ public class CharacterStatus : MonoBehaviour {
         set { m_health = value; }
     }
 
-    public Team team
+    public int team
     {
         get { return m_team; }
         set { m_team = value; }
@@ -59,4 +75,46 @@ public class CharacterStatus : MonoBehaviour {
         get { return m_damage; }
         set { m_damage = value; }
     }
+	
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+		// IMPORTANT
+		// Same order on writing and reading.
+	    if (stream.isWriting)
+	    {
+		    stream.Serialize(ref m_id);
+			stream.Serialize(ref m_health);
+			stream.Serialize(ref m_team);	
+			
+	    }
+	    else
+	    {
+	        int receivedid = 0;
+	        stream.Serialize(ref receivedid); //"Decode" it and receive it
+	        id = receivedid;
+			
+			float receivedhealth = 0;
+	        stream.Serialize(ref receivedhealth); //"Decode" it and receive it
+	        health = receivedhealth;
+			
+			int receivedteam = 0;
+	        stream.Serialize(ref receivedteam); //"Decode" it and receive it
+	        
+			if(team != receivedteam)
+			{
+				team = receivedteam;				
+				if (m_team==1) {transform.FindChild("baseMale").renderer.material=ninjaMaterial;}
+				else if (m_team==2) {this.transform.FindChild("baseMale").renderer.material=pirateMaterial;}
+			}
+			//string receivedname;
+	        //stream.Serialize(ref receivedname); //"Decode" it and receive it
+	        //name = receivedname;
+	    }
+	}
+	
+	[RPC]
+	void TakeDMG (float damage)
+	{
+		health -= damage;
+	}
 }

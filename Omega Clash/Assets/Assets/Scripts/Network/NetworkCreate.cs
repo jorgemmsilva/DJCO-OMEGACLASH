@@ -26,6 +26,7 @@ public class NetworkCreate : MonoBehaviour {
 		
 		
     	Transform myPlayer = (Transform)Network.Instantiate(Prefab, spawn_point.position, spawn_point.rotation, 0);
+		myPlayer.GetComponent<CharacterStatus>().id = Random.Range(int.MinValue, int.MaxValue);
 		foreach (Transform child in myPlayer)
 		{
 		  	//child is your child transform
@@ -41,9 +42,5 @@ public class NetworkCreate : MonoBehaviour {
 				return;
 			}	
 		}
-		//Camera.main.transform.parent = myPlayer.GetComponent<FirePosition>();
-		
-		//Camera.main.transform.localPosition = new Vector3(0,6,-10);		
-		//Camera.main.transform.localRotation = Quaternion.Euler(25,0,0);
 	}
 }

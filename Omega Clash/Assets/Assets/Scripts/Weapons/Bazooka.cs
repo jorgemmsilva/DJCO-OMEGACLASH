@@ -3,15 +3,22 @@ using System.Collections;
 
 public class Bazooka : MonoBehaviour {
 	
-	public GameObject author;
+	public int authorId;
 
 	void OnCollisionEnter(Collision other)
 	{
-		if (other.gameObject.tag == "Player" && other.gameObject != author)
+		if(networkView.isMine)
 		{
-			Debug.Log("BATEU BAZZOKA");
-			other.gameObject.rigidbody.AddForce(rigidbody.velocity, ForceMode.Force);
-			Destroy(this.gameObject);
+			if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<CharacterStatus>().id != authorId)
+			{
+				other.gameObject.rigidbody.AddForce(rigidbody.velocity, ForceMode.Force);
+				other.gameObject.GetComponent<CharacterStatus>().health -= 10;
+				
+				float damage = 10.0f;
+				other.gameObject.GetComponent<NetworkView>().RPC ("TakeDMG", RPCMode.All, damage);
+
+				Network.Destroy(GetComponent<NetworkView>().viewID);
+			}
 		}
     }
 	
@@ -24,9 +31,11 @@ public class Bazooka : MonoBehaviour {
 		    Vector3 myPosition = transform.position;
 		    stream.Serialize(ref myPosition);
 			
-			Quaternion myRotation = transform.rotation;
-			stream.Serialize(ref myRotation);	
+			float mymass = this.rigidbody.mass;
+			stream.Serialize(ref mymass);
 			
+			int myauthorId = this.authorId;
+			stream.Serialize(ref myauthorId);
 	    }
 	    else
 	    {
@@ -34,9 +43,13 @@ public class Bazooka : MonoBehaviour {
 	        stream.Serialize(ref receivedPosition); //"Decode" it and receive it
 	        transform.position = receivedPosition;
 			
-			Quaternion receivedRotation = new Quaternion();
-	        stream.Serialize(ref receivedRotation); //"Decode" it and receive it
-	        transform.rotation = receivedRotation;
+			float receivedmymass = 0.0f;
+	        stream.Serialize(ref receivedmymass); //"Decode" it and receive it
+	        this.rigidbody.mass = receivedmymass;
+			
+			int receivedmyauthorId = 0;
+	        stream.Serialize(ref receivedmyauthorId); //"Decode" it and receive it
+	        this.authorId = receivedmyauthorId;			
 	    }
 	}
 }
